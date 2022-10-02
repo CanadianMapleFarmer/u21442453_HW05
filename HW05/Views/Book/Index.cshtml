@@ -1,0 +1,92 @@
+﻿@model HW05.Models.BookVM
+@{
+    ViewBag.Title = "Book Page";
+
+    var books = Model.Books;
+    var authors = Model.Authors;
+    var types = Model.Types;
+    var statuses = Model.Statuses;
+
+    var bookandstatus = books.Zip(statuses, (b, s) => new { Book = b, Status = s });
+}
+
+<h2>Books</h2>
+<hr />
+    <div class="row row-no-gutters">
+        <div class="col-md-4">
+            <input type="text" id="searchText" class="form-control" placeholder="Search Book Name" />
+        </div>
+        <div class="col-md-2">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="typeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Select a Type
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="typeDropdown">
+                    @foreach (var type in types)
+                    {
+                            <li>@Html.ActionLink($"{type.Name}", "setTypeFilter", "Book", new { typeid = type.TypeID }, null)</li>
+                        }
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="authorDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Select an Author
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="authorDropdown">
+                    @foreach (var author in authors)
+                    {
+                        <li>@Html.ActionLink($"{author.Surname}", "setAuthorFilter", "Book", new { authorID = author.AuthorID }, null)</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2">
+            @Html.ActionLink("Search", "SearchBook", "Book", null, htmlAttributes: new { @type = "submit", @class = "btn btn-success", @style = "width: 18rem;" })
+        </div>
+        <div class="col-md-2">
+            @Html.ActionLink("Clear", "ClearFilter", "Book", null, htmlAttributes: new { @type = "button", @class = "btn btn-danger", @style = "width: 18rem; margin-left: 1rem;" })
+        </div>
+    </div>
+<br /> 
+<div class="table-responsive">
+<table class="table table-hover">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Type</th>
+        <th>Page Count</th>
+        <th>Points</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    <tbody>
+        @if(books.Count != 0)
+        {
+            foreach (var bs in bookandstatus)
+            {
+                <tr>
+                    <td>@bs.Book.BookID</td>
+                    <td>@bs.Book.Name</td>
+                    <td>@bs.Book.Author</td>
+                    <td>@bs.Book.Type</td>
+                    <td>@bs.Book.PageCount</td>
+                    <td>@bs.Book.Point</td>
+                    <td style="color: @bs.Status.Style">@bs.Status.Text</td>
+                    <td>@Html.ActionLink("View", "viewBook", new { id = bs.Book.BookID}, new { @type = "button", @class = "btn btn-primary" } )</td>
+                </tr>
+            }
+        } else
+        {
+                <tr>
+                    <td>No Results.</td>
+                </tr>
+        }
+    </tbody>
+</table>
+</div>
+

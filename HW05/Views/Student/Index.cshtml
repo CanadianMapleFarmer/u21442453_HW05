@@ -1,0 +1,80 @@
+﻿@model HW05.Models.StudentVM
+@{
+    ViewBag.Title = "Students";
+
+    var students = Model.students;
+    var classes = Model.classes;
+    var bookid = Model.bookid;
+    var isavail = Model.isavailable;
+    var studentid = Model.studentid;
+    var borrowid = Model.borrowid;
+}
+
+<h2>Students</h2>
+
+<hr />
+<div class="row row-no-gutters">
+    <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Search" />
+    </div>
+    <div class="col-md-4">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="typeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Select a Class
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="typeDropdown">
+                @foreach (var c in classes)
+                {
+                    <li>@Html.ActionLink($"{c.ClassName}", "SetClassFilter", "Student", new { className = c.ClassName}, null)</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-2">
+        @Html.ActionLink("Search", "SearchStudent", "Student", null, htmlAttributes: new { @type = "button", @class = "btn btn-success", @style = "width: 18rem;" })
+    </div>
+    <div class="col-md-2">
+        @Html.ActionLink("Clear", "ClearFilter", "Student", null, htmlAttributes: new { @type = "button", @class = "btn btn-danger", @style = "width: 18rem; margin-left: 1rem;" })
+    </div>
+</div>
+<br />
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Class</th>
+            <th>Points</th>
+            <th>Borrow Book</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                <tr>
+                    <td>@student.StudentID</td>
+                    <td>@student.Name</td>
+                    <td>@student.Surname</td>
+                    <td>@student.Class</td>
+                    <td>@student.Point</td>
+                    <td>
+                        @{
+                            if (isavail)
+                            {
+                                @Html.ActionLink("Borrow Book", "BorrowBook", "Student", new { studentid = student.StudentID, bookid = bookid }, htmlAttributes: new { @type = "button", @class = "btn btn-primary" });
+                            }
+                            else if (student.StudentID == studentid)
+                            {
+                                @Html.ActionLink("Return Book", "ReturnBook", "Student", new { borrowid = borrowid, bookid = bookid }, htmlAttributes: new { @type = "button", @class = "btn btn-primary" });
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

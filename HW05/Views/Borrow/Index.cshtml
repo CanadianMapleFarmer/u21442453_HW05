@@ -1,0 +1,59 @@
+﻿@model HW05.Models.BorrowVM
+@{
+    ViewBag.Title = "Borrow Book";
+    var borrows = Model.borrows;
+    var status = Model.status;
+    var title = Model.title;
+    var bookid = Model.bookid;
+}
+
+<h1>@title<mark class="@status.Style">@status.Text</mark></h1>
+
+<hr />
+<div class="row" >
+    <div class="col-lg-4">
+    <h3>#Borrows - @borrows.Count()</h3>
+    </div>
+    <div class="col-lg-4">
+    </div>
+    <div class="col-lg-4">
+        <div>@Html.ActionLink("View Students", "viewStudents", "Borrow", new { id = bookid}, new { @type = "button", @class = "btn btn-block btn-primary" })</div>
+    </div>
+</div>
+<br />
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Take Date</th>
+            <th>Brought Date</th>
+            <th>Borrowed By</th>
+        </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var borrow in borrows)
+            {
+                <tr>
+                    <td>@borrow.BorrowID</td>
+                    <td>@borrow.TakenDate</td>
+                    <td>
+                        @{
+                            if(borrow.BroughtDate == null) 
+                            {
+                                <p>Book Out</p>
+                            } else
+                            {
+                                @borrow.BroughtDate
+                            }
+                        }
+                    </td>
+                    <td>@borrow.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

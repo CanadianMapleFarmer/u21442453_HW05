@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+mark.green {
+    color: green;
+    background: none;
+}
+
+mark.red {
+    color: red;
+    background: none;
+}
