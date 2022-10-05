@@ -111,7 +111,7 @@ namespace HW05.Models
             return students;
         }
 
-        public List<Book> getAllBooksByAuthorId(int id)
+        public List<Book> getAllBooksByAuthorId(String id)
         {
             List<Book> books = new List<Book>();
             try
@@ -150,7 +150,7 @@ namespace HW05.Models
             return books;
         }
 
-        public List<Book> getAllBooksByTypeId(int id)
+        public List<Book> getAllBooksByTypeId(String id)
         {
             List<Book> books = new List<Book>();
             try
@@ -228,7 +228,7 @@ namespace HW05.Models
             return books;
         }
 
-        public List<Book> getAllBooksByAuthorAndTypeId(int authorid, int typeid)
+        public List<Book> getAllBooksByAuthorAndTypeId(String authorid, String typeid)
         {
             List<Book> books = new List<Book>();
             try
@@ -267,7 +267,7 @@ namespace HW05.Models
             return books;
         }
 
-        public List<Book> getAllBooksByAuthorIdAndSearchText(int authorid, String searchText)
+        public List<Book> getAllBooksByAuthorIdAndSearchText(String authorid, String searchText)
         {
             List<Book> books = new List<Book>();
             try
@@ -306,7 +306,7 @@ namespace HW05.Models
             return books;
         }
 
-        public List<Book> getAllBooksByTypeIdAndSearchText(int typeid, String searchText)
+        public List<Book> getAllBooksByTypeIdAndSearchText(String typeid, String searchText)
         {
             List<Book> books = new List<Book>();
             try
@@ -345,7 +345,7 @@ namespace HW05.Models
             return books;
         }
 
-        public List<Book> getAllBooksByTypeAuthorAndSearchText(int authorid, int typeid, String searchText)
+        public List<Book> getAllBooksByTypeAuthorAndSearchText(String authorid, String typeid, String searchText)
         {
             List<Book> books = new List<Book>();
             try
@@ -382,6 +382,117 @@ namespace HW05.Models
             }
 
             return books;
+        }
+
+        public List<Student> getStudentsByClass(String Class)
+        {
+            List<Student> students = new List<Student>();
+            try
+            {
+                openConnection();
+                SqlCommand command = new SqlCommand(
+                                    $"SELECT * " +
+                                    $"FROM students " +
+                                    $"WHERE class = '{Class}';", connection);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        students.Add(new Student
+                        {
+                            StudentID = Convert.ToInt32(reader["studentid"]),
+                            Name = reader["name"].ToString(),
+                            Surname = reader["surname"].ToString(),
+                            Class = reader["class"].ToString(),
+                            Point = Convert.ToInt32(reader["point"])
+                        });
+                    }
+                }
+                closeConnection();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Sql getStudentsByClass(String Class) error: " + ex);
+            }
+            finally
+            {
+                closeConnection();
+            }
+            return students;
+        }
+
+        public List<Student> getStudentsBySearch(String searchtext)
+        {
+            List<Student> students = new List<Student>();
+            try
+            {
+                openConnection();
+                SqlCommand command = new SqlCommand(
+                                    $"SELECT * " +
+                                    $"FROM students " +
+                                    $"WHERE name LIKE '%{searchtext}%';", connection);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        students.Add(new Student
+                        {
+                            StudentID = Convert.ToInt32(reader["studentid"]),
+                            Name = reader["name"].ToString(),
+                            Surname = reader["surname"].ToString(),
+                            Class = reader["class"].ToString(),
+                            Point = Convert.ToInt32(reader["point"])
+                        });
+                    }
+                }
+                closeConnection();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Sql getStudentsBySearch(String searchtext) error: " + ex);
+            }
+            finally
+            {
+                closeConnection();
+            }
+            return students;
+        }
+
+        public List<Student> getStudentsBySearchAndClass(String Class, String searchtext)
+        {
+            List<Student> students = new List<Student>();
+            try
+            {
+                openConnection();
+                SqlCommand command = new SqlCommand(
+                                    $"SELECT * " +
+                                    $"FROM students " +
+                                    $"WHERE class = '{Class}' AND name LIKE '%{searchtext}%';", connection);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        students.Add(new Student
+                        {
+                            StudentID = Convert.ToInt32(reader["studentid"]),
+                            Name = reader["name"].ToString(),
+                            Surname = reader["surname"].ToString(),
+                            Class = reader["class"].ToString(),
+                            Point = Convert.ToInt32(reader["point"])
+                        });
+                    }
+                }
+                closeConnection();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Sql getStudentsBySearchAndClass(String Class, String searchtext) error: " + ex);
+            }
+            finally
+            {
+                closeConnection();
+            }
+            return students;
         }
 
         public List<Borrow> getBorrowsById(int id)

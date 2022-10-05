@@ -10,21 +10,43 @@ namespace HW05.Controllers
     {
         private DBService ds = new DBService();
         public static String searchText = null;
-        public static int? typeid = null;
-        public static int? authorid = null;
+        public static String typeid = null;
+        public static String authorid = null;
         private List<Book> books = new List<Book>();
 
         public ActionResult Index()
         {
-            if (typeid == null && authorid == null)
+            if (typeid != null && searchText != null && authorid != null)
+            {
+                books = ds.getAllBooksByTypeAuthorAndSearchText(authorid, typeid, searchText);
+            }
+            else if(typeid != null && searchText != null && authorid == null)
+            {
+                books = ds.getAllBooksByTypeIdAndSearchText(typeid, searchText);
+            }
+            else if (typeid == null && searchText != null && authorid != null)
+            {
+                books = ds.getAllBooksByAuthorIdAndSearchText(authorid, searchText);
+            }
+            else if (typeid != null && searchText == null && authorid != null)
+            {
+                books = ds.getAllBooksByAuthorAndTypeId(authorid, typeid);
+            }
+            else if (typeid != null && searchText == null && authorid == null)
+            {
+                books = ds.getAllBooksByTypeId(typeid);
+            }
+            else if (typeid == null && searchText == null && authorid != null)
+            {
+                books = ds.getAllBooksByAuthorId(authorid);
+            }
+            else if (typeid == null && searchText != null && authorid == null)
+            {
+                books = ds.getAllBooksBySearchText(searchText);
+            }
+            else if (typeid == null && authorid == null && searchText == null)
             {
                 books = ds.getAllBooks();
-            } else if (typeid != null)
-            {
-                books = ds.getAllBooksByTypeId(Convert.ToInt32(BookController.typeid));
-            } else if (authorid != null)
-            {
-                books = ds.getAllBooksByAuthorId(Convert.ToInt32(BookController.authorid));
             }
 
             List<Author> authors = ds.getAllAuthors();
@@ -76,20 +98,31 @@ namespace HW05.Controllers
             return RedirectToAction("Index", "Borrow", new { id = id });
         }
 
-        public ActionResult setTypeFilter(int typeid)
+        [HttpPost]
+        public ActionResult searchBook(FormCollection f)
         {
-            BookController.typeid = typeid;
-            return RedirectToAction("Index");
-        }
+            String st = f["searchText"];
+            String typeId = f["selectedType"];
+            String authorId = f["selectedAuthor"];
+            if(st != "")
+            {
+                BookController.searchText = st;
+            }
+            if (typeId != "0")
+            {
+                BookController.typeid = typeId;
+            }
+            if (authorId != "0")
+            {
+                BookController.authorid = authorId;
+            }
 
-        public ActionResult setAuthorFilter(int authorid)
-        {
-            BookController.authorid = authorid;
             return RedirectToAction("Index");
         }
 
         public ActionResult clearFilter()
         {
+            BookController.searchText = null;
             BookController.typeid = null;
             BookController.authorid = null;
             return RedirectToAction("Index");

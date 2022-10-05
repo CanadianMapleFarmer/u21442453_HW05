@@ -13,31 +13,29 @@
 <h2>Students</h2>
 
 <hr />
-<div class="row row-no-gutters">
-    <div class="col-md-4">
-        <input type="text" class="form-control" placeholder="Search" />
-    </div>
-    <div class="col-md-4">
-        <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="typeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Select a Class
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="typeDropdown">
+@using (Html.BeginForm("searchStudent", "Student", new { bookid = bookid } ,FormMethod.Post, null))
+{
+    <div class="row row-no-gutters">
+        <div class="col-md-4">
+            <input type="text" name="searchText" class="form-control" placeholder="Search Student Name" />
+        </div>
+        <div class="col-md-4">
+            <select name="selectedClass" class="dropdown">
+                <option value="0">Select a Class</option>
                 @foreach (var c in classes)
                 {
-                    <li>@Html.ActionLink($"{c.ClassName}", "SetClassFilter", "Student", new { className = c.ClassName}, null)</li>
-                }
-            </ul>
+                    <option value="@c.ClassName">@c.ClassName</option>
+                    }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success" style="width: 18rem;">Search</button>
+        </div>
+        <div class="col-md-2">
+            @Html.ActionLink("Clear", "clearFilter", "Student", new { bookid = bookid }, htmlAttributes: new { @type = "button", @class = "btn btn-danger", @style = "width: 18rem; margin-left: 1rem;" })
         </div>
     </div>
-    <div class="col-md-2">
-        @Html.ActionLink("Search", "SearchStudent", "Student", null, htmlAttributes: new { @type = "button", @class = "btn btn-success", @style = "width: 18rem;" })
-    </div>
-    <div class="col-md-2">
-        @Html.ActionLink("Clear", "ClearFilter", "Student", null, htmlAttributes: new { @type = "button", @class = "btn btn-danger", @style = "width: 18rem; margin-left: 1rem;" })
-    </div>
-</div>
+}
 <br />
 <div class="table-responsive">
     <table class="table table-hover">
